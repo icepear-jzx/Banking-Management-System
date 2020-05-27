@@ -6,8 +6,13 @@ from . import db
 bp = Blueprint('customer', __name__, url_prefix='/customer')
 
 
-@bp.route('/add', methods=['POST'])
-def add():
+@bp.route('/create', methods=['GET'])
+def create_init():
+    return render_template('customer/create.html')
+
+
+@bp.route('/create', methods=['POST'])
+def create():
     cusID = request.form['cusID']
     cusname = request.form['cusname']
     cusphone = request.form['cusphone']
@@ -21,7 +26,13 @@ def add():
     return jsonify({'status': 'success'})
 
 
-@bp.route('/getall', methods=['GET'])
-def getall():
+@bp.route('/search', methods=['GET'])
+def search_init():
+    customers = Customer.query.filter_by()
+    return render_template('customer/index.html')
+
+
+@bp.route('/search', methods=['POST'])
+def search():
     customers = Customer.query.filter_by()
     return render_template('customer/index.html')
