@@ -1,4 +1,5 @@
 <!doctype html>
+<html class="h-100">
 
 <head>
   <meta charset="utf-8">
@@ -19,102 +20,105 @@
   <title>银行业务管理系统</title>
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
   <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand col-2" href="#">银行业务管理系统</a>
   </nav>
 
-  <div class="container-fluid">
-    <div class="row">
+  <div class="container-fluid h-100">
+    <div class="row h-100">
       <nav class="col-2 bg-dark px-0">
-          <ul class="nav flex-column text-center">
-            <li class="nav-item">
-              <a class="nav-link text-light" data-toggle="collapse" href="#customer" aria-expanded="false" aria-controls="customer">
-                客户管理
-              </a>
-            </li>
-            <div class="collapse bg-secondary" id="customer">
-              <li class="nav-item">
-                <a class="nav-link text-light" href="#">
-                  新增客户
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-light" href="#">
-                  删除客户
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-light" href="#">
-                  修改客户信息
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-light" href="#">
-                  查询客户信息
-                </a>
-              </li>
-            </div>
-            <li class="nav-item">
-              <a class="nav-link text-light" data-toggle="collapse" href="#account" aria-expanded="false" aria-controls="account">
-                账户管理
-              </a>
-            </li>
-            <div class="collapse bg-secondary" id="account">
-              <li class="nav-item">
-                <a class="nav-link text-light" href="#">
-                  新增账户
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-light" href="#">
-                  删除账户
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-light" href="#">
-                  修改账户信息
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-light" href="#">
-                  查询账户信息
-                </a>
-              </li>
-            </div>
-            <li class="nav-item">
-              <a class="nav-link text-light" data-toggle="collapse" href="#loan" aria-expanded="false" aria-controls="loan">
-                贷款管理
-              </a>
-            </li>
-            <div class="collapse bg-secondary" id="loan">
-              <li class="nav-item">
-                <a class="nav-link text-light" href="#">
-                  新增贷款
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-light" href="#">
-                  删除贷款
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-light" href="#">
-                  修改贷款信息
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-light" href="#">
-                  查询贷款信息
-                </a>
-              </li>
-            </div>
+        <ul class="nav flex-column text-center">
+          <li class="nav-item">
+            <a class="nav-link text-light" data-toggle="collapse" href="#customer" aria-expanded="false"
+              aria-controls="customer">
+              客户管理
+            </a>
+          </li>
+          <div class="collapse bg-secondary" id="customer">
             <li class="nav-item">
               <a class="nav-link text-light" href="#">
-                业务统计
+                新增客户
               </a>
             </li>
-          </ul>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="#">
+                删除客户
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="#">
+                修改客户信息
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="#">
+                查询客户信息
+              </a>
+            </li>
+          </div>
+          <li class="nav-item">
+            <a class="nav-link text-light" data-toggle="collapse" href="#account" aria-expanded="false"
+              aria-controls="account">
+              账户管理
+            </a>
+          </li>
+          <div class="collapse bg-secondary" id="account">
+            <li class="nav-item">
+              <a class="nav-link text-light" href="#">
+                新增账户
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="#">
+                删除账户
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="#">
+                修改账户信息
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="#">
+                查询账户信息
+              </a>
+            </li>
+          </div>
+          <li class="nav-item">
+            <a class="nav-link text-light" data-toggle="collapse" href="#loan" aria-expanded="false"
+              aria-controls="loan">
+              贷款管理
+            </a>
+          </li>
+          <div class="collapse bg-secondary" id="loan">
+            <li class="nav-item">
+              <a class="nav-link text-light" href="#">
+                新增贷款
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="#">
+                删除贷款
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="#">
+                修改贷款信息
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="#">
+                查询贷款信息
+              </a>
+            </li>
+          </div>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="#">
+              业务统计
+            </a>
+          </li>
+        </ul>
       </nav>
 
       <main role="main" class="col-10 pt-3 px-4">
@@ -123,97 +127,10 @@
     </div>
   </div>
 
-  <footer>
-    <br><br>
-  </footer>
-
 </body>
 
 <style>
-  body {
-    font-size: .875rem;
-  }
 
-  .feather {
-    width: 16px;
-    height: 16px;
-    vertical-align: text-bottom;
-  }
-
-  .sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 100;
-    padding: 0;
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-  }
-
-  .sidebar-sticky {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 48px;
-    height: calc(100vh - 48px);
-    padding-top: .5rem;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-
-  .sidebar .nav-link {
-    font-weight: 500;
-    color: #333;
-  }
-
-  .sidebar .nav-link .feather {
-    margin-right: 4px;
-    color: #999;
-  }
-
-  .sidebar .nav-link.active {
-    color: #007bff;
-  }
-
-  .sidebar .nav-link:hover .feather,
-  .sidebar .nav-link.active .feather {
-    color: inherit;
-  }
-
-  .sidebar-heading {
-    font-size: .75rem;
-    text-transform: uppercase;
-  }
-
-  /* .navbar-brand {
-    padding-top: .75rem;
-    padding-bottom: .75rem;
-    font-size: 1rem;
-    background-color: rgba(0, 0, 0, .25);
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
-  } */
-
-  .navbar .form-control {
-    padding: .75rem 1rem;
-    border-width: 0;
-    border-radius: 0;
-  }
-
-  .form-control-dark {
-    color: #fff;
-    background-color: rgba(255, 255, 255, .1);
-    border-color: rgba(255, 255, 255, .1);
-  }
-
-  .form-control-dark:focus {
-    border-color: transparent;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
-  }
-
-  .border-top {
-    border-top: 1px solid #e5e5e5;
-  }
-
-  .border-bottom {
-    border-bottom: 1px solid #e5e5e5;
-  }
 </style>
+
+</html>
