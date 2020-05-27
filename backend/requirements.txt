@@ -1,0 +1,5 @@
+flask-sqlalchemy==2.4.1
+mysqlclient==1.4.6
+flask-login==0.5.0
+flask-httpauth==3.3.0 
+itsdangerous==1.1.0
