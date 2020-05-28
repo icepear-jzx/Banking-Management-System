@@ -2,6 +2,52 @@
 
 {% block content %}
 <div class="container">
-  index.html
+  <h2 class="mb-3 mt-2">查询客户</h2>
+  <form class="form-inline mb-3" method="post">
+    <div class="d-flex justify-content-between mb-2 w-100">
+      <div class="form-group">
+        <label class="form-label mr-2">客户姓名</label>
+        <input type="text" class="form-control" name="cusID">
+      </div>
+      <div class="form-group">
+        <label class="form-label mr-2">身份证号</label>
+        <input type="text" class="form-control" name="cusID">
+      </div>
+      <div class="form-group">
+        <label class="form-label mr-2">联系电话</label>
+        <input type="text" class="form-control" name="cusID">
+      </div>
+      <button type="submit" class="btn btn-primary">查询</button>
+      <button type="submit" class="btn btn-secondary">重置</button>
+    </div>
+  </form>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr class="text-center">
+          <th scope="col">#</th>
+          <th scope="col">客户姓名</th>
+          <th scope="col">身份证号</th>
+          <th scope="col">联系电话</th>
+          <th scope="col">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cus in customers %}
+        <tr class="text-center">
+          <th class="align-middle" scope="row">{{ customers.index(cus) }}</th>
+          <td class="align-middle">{{ cus.cusname }}</td>
+          <td class="align-middle">{{ cus.cusID }}</td>
+          <td class="align-middle">{{ cus.cusphone }}</td>
+          <td>
+            <button type="submit" class="btn btn-sm btn-primary">详细</button>
+            <button type="submit" class="btn btn-sm btn-primary">编辑</button>
+            <a type="submit" class="btn btn-sm btn-danger" href="#">删除</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}

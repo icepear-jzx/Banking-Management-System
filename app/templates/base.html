@@ -26,11 +26,17 @@
   </nav>
   {% set navs = ["客户管理", "账户管理", "贷款管理", "业务统计"] %}
   {% set subnavs = [
-    ["新增客户", "删除客户", "修改客户", "查询客户"],
-    ["账户开户", "账户销户", "修改账户", "查询账户"],
-    ["新增贷款", "删除贷款", "发放贷款", "查询贷款"],
+    ["新增客户", "查询客户"],
+    ["账户开户", "查询账户"],
+    ["新增贷款", "查询贷款"],
     ["业务金额", "用户统计"]
   ] %}
+  {% set urls = [
+    ["customer.create", "customer.search"],
+    ["account.create", "account.search"],
+    ["loan.create", "loan.search"],
+    ["statistics.money", "statistics.customers"]
+  ]%}
   <div class="container-fluid h-100">
     <div class="row h-100">
       <nav class="col-2 bg-dark px-0">
@@ -43,7 +49,7 @@
           </li>
           {% for subnavid in range(subnavs[navid]|length) %}
           <li class="nav-item bg-secondary">
-            <a class="nav-link text-light">
+            <a class="nav-link text-light" href="{{ url_for(urls[navid][subnavid]) }}">
               {{ subnavs[navid][subnavid] }}
             </a>
           </li>

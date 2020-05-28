@@ -11,6 +11,12 @@ db = SQLAlchemy()
 def register_blueprints(app):
     from .customer import bp as customer_bp
     app.register_blueprint(customer_bp)
+    from .account import bp as account_bp
+    app.register_blueprint(account_bp)
+    from .loan import bp as loan_bp
+    app.register_blueprint(loan_bp)
+    from .statistics import bp as statistics_bp
+    app.register_blueprint(statistics_bp)
 
 
 def register_plugin(app):

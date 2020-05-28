@@ -3,58 +3,24 @@
 {% block content %}
 <div class="container">
   <h2 class="mb-3 mt-2">新增客户</h2>
+  {% set labels = ["客户姓名", "身份证号", "联系电话", "家庭住址", 
+    "联系人姓名", "联系人手机号", "联系人Email", "联系人关系"
+  ] %}
+  {% set names = ["cusname", "cusID", "cusphone", "address",
+    "contact_name", "contact_phone", "contact_email", "relation"
+  ] %}
   <form method="post">
+    {% for i in range(8) %}
     <div class="form-group row">
-      <label class="col-2 col-form-label">客户姓名</label>
+      <label class="col-2 col-form-label text-right">{{ labels[i] }}</label>
       <div class="col-10">
-        <input type="text" class="form-control" name="cusname">
+        <input type="text" class="form-control" name="{{ names[i] }}">
       </div>
     </div>
-    <div class="form-group row">
-      <label class="col-2 col-form-label">身份证号</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="cusID">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-2 col-form-label">联系电话</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="cusphone">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-2 col-form-label">家庭住址</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="address">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-2 col-form-label">联系人姓名</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="contact_name">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-2 col-form-label">联系人手机号</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="contact_phone">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-2 col-form-label">联系人Email</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="contact_email">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-2 col-form-label">联系人关系</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="relation">
-      </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-12">
-        <button type="submit" class="btn btn-primary">提交</button>
+    {% endfor %}
+    <div class="row">
+      <div class="col-12 w-100 d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary mr-2">提交</button>
         <button type="submit" class="btn btn-secondary">重置</button>
       </div>
     </div>
