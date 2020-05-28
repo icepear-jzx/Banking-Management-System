@@ -41,13 +41,20 @@ def create():
         errors.append('contact_email')
     if len(relation) == 0 or len(relation) > 10:
         errors.append('relation')
+    if Customer.query.filter_by(cusID=cusID).first():
+        errors.append('cusID')
     if not errors:
         new_customer = Customer(cusID=cusID, cusname=cusname, cusphone=cusphone, 
             address=address, contact_name=contact_name, contact_phone=contact_phone, 
             contact_email=contact_email, relation=relation)
         db.session.add(new_customer)
         db.session.commit()
-    return render_template('customer/create.html', errors=errors, init_form=request.form)
+        init_form = {'cusID': '', 'cusname': '', 'cusphone': '', 'address': '',
+        'contact_phone': '', 'contact_name': '', 'contact_email': '', 'relation': ''}
+        flash('Create new customer successfully!')
+        return render_template('customer/create.html', errors=errors, init_form=init_form)
+    else:
+        return render_template('customer/create.html', errors=errors, init_form=request.form)
 
 
 @bp.route('/search', methods=['GET'])
@@ -58,5 +65,19 @@ def search_init():
 
 @bp.route('/search', methods=['POST'])
 def search():
+    cusID = request.form['cusID']
+    cusname = request.form['cusname']
+    cusphone = request.form['cusphone']
     customers = Customer.query.filter_by()
-    return render_template('customer/search.html')
+    if 'and' in request.form:
+        if cusID:
+            customers = customers.filter_by(cusID=cusID)
+        if cusname:
+            customers = customers.filter_by(cusname=cusname)
+        if cusphone:
+            customers = customers.filter_by(cusphone=cusphone)
+    else:
+        if cusID or cusname or cusphone:
+            customers = customers.filter((Customer.cusID == cusID) | (Customer.cusname == cusname) | 
+                (Customer.cusphone == cusphone))
+    return render_template('customer/search.html', customers=customers.all())
