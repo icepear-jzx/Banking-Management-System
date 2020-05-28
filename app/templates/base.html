@@ -24,103 +24,33 @@
   <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand col-2" href="#">银行业务管理系统</a>
   </nav>
-
+  {% set navs = ["客户管理", "账户管理", "贷款管理", "业务统计"] %}
+  {% set subnavs = [
+    ["新增客户", "删除客户", "修改客户", "查询客户"],
+    ["账户开户", "账户销户", "修改账户", "查询账户"],
+    ["新增贷款", "删除贷款", "发放贷款", "查询贷款"],
+    ["业务金额", "用户统计"]
+  ] %}
   <div class="container-fluid h-100">
     <div class="row h-100">
       <nav class="col-2 bg-dark px-0">
         <ul class="nav flex-column text-center">
+          {% for navid in range(navs|length) %}
           <li class="nav-item">
-            <a class="nav-link text-light" data-toggle="collapse" href="#customer" aria-expanded="false"
-              aria-controls="customer">
-              客户管理
+            <a class="nav-link text-light">
+              {{ navs[navid] }}
             </a>
           </li>
-          <div class="collapse bg-secondary" id="customer">
-            <li class="nav-item">
-              <a class="nav-link text-light" href="#">
-                新增客户
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="#">
-                删除客户
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="#">
-                修改客户信息
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="#">
-                查询客户信息
-              </a>
-            </li>
-          </div>
-          <li class="nav-item">
-            <a class="nav-link text-light" data-toggle="collapse" href="#account" aria-expanded="false"
-              aria-controls="account">
-              账户管理
+          {% for subnavid in range(subnavs[navid]|length) %}
+          <li class="nav-item bg-secondary">
+            <a class="nav-link text-light">
+              {{ subnavs[navid][subnavid] }}
             </a>
           </li>
-          <div class="collapse bg-secondary" id="account">
-            <li class="nav-item">
-              <a class="nav-link text-light" href="#">
-                新增账户
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="#">
-                删除账户
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="#">
-                修改账户信息
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="#">
-                查询账户信息
-              </a>
-            </li>
-          </div>
-          <li class="nav-item">
-            <a class="nav-link text-light" data-toggle="collapse" href="#loan" aria-expanded="false"
-              aria-controls="loan">
-              贷款管理
-            </a>
-          </li>
-          <div class="collapse bg-secondary" id="loan">
-            <li class="nav-item">
-              <a class="nav-link text-light" href="#">
-                新增贷款
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="#">
-                删除贷款
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="#">
-                修改贷款信息
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="#">
-                查询贷款信息
-              </a>
-            </li>
-          </div>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="#">
-              业务统计
-            </a>
-          </li>
+          {% endfor %}
+          {% endfor %}
         </ul>
       </nav>
-
       <main role="main" class="col-10 pt-3 px-4">
         {% block content %}{% endblock %}
       </main>
@@ -129,8 +59,8 @@
 
 </body>
 
+</html>
+
 <style>
 
 </style>
-
-</html>
