@@ -7,15 +7,15 @@
     <div class="d-flex justify-content-between mb-2 w-100">
       <div class="form-group">
         <label class="form-label mr-2">客户姓名</label>
-        <input type="text" class="form-control" name="cusname">
+        <input type="text" class="form-control" name="cusname" value="{{ init_form['cusname'] }}">
       </div>
       <div class="form-group">
         <label class="form-label mr-2">身份证号</label>
-        <input type="text" class="form-control" name="cusID">
+        <input type="text" class="form-control" name="cusID" value="{{ init_form['cusID'] }}">
       </div>
       <div class="form-group">
         <label class="form-label mr-2">联系电话</label>
-        <input type="text" class="form-control" name="cusphone">
+        <input type="text" class="form-control" name="cusphone" value="{{ init_form['cusphone'] }}">
       </div>
       <input type="submit" class="btn btn-primary" name="and" value="AND查询">
       <input type="submit" class="btn btn-primary" name="or" value="OR查询">
@@ -40,14 +40,92 @@
           <td class="align-middle">{{ cus.cusID }}</td>
           <td class="align-middle">{{ cus.cusphone }}</td>
           <td>
-            <button type="submit" class="btn btn-sm btn-primary">详细</button>
-            <button type="submit" class="btn btn-sm btn-primary">编辑</button>
-            <a type="submit" class="btn btn-sm btn-danger" href="#">删除</a>
+            <button type="submit" class="btn btn-sm btn-primary" 
+              data-toggle="modal" data-target="#detail{{ cus.cusID }}">详细</button>
+            <button type="submit" class="btn btn-sm btn-primary" 
+              data-toggle="modal" data-target="#edit{{ cus.cusID }}">编辑</button>
+            <a type="submit" class="btn btn-sm btn-danger" 
+              href="{{ url_for('customer.delete', cusID=cus.cusID) }}">删除</a>
           </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+  {% for cus in customers %}
+  <div class="modal fade bd-example-modal-lg" id="detail{{ cus.cusID }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          {% set labels = ["客户姓名", "身份证号", "联系电话", "家庭住址", 
+            "联系人姓名", "联系人手机号", "联系人Email", "联系人关系"
+          ] %}
+          {% set names = ["cusname", "cusID", "cusphone", "address",
+            "contact_name", "contact_phone", "contact_email", "relation"
+          ] %}
+          <form class="pt-3" method="post">
+            {% for i in range(8) %}
+            <div class="form-group row">
+              <label class="col-3 col-form-label text-right">{{ labels[i] }}</label>
+              <div class="col-8">
+                <input readonly type="text" class="form-control" name="{{ names[i] }}" 
+                  value="{{ cus[names[i]] }}">
+              </div>
+            </div>
+            {% endfor %}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% for cus in customers %}
+  <div class="modal fade bd-example-modal-lg" id="edit{{ cus.cusID }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          {% set labels = ["客户姓名", "身份证号", "联系电话", "家庭住址", 
+            "联系人姓名", "联系人手机号", "联系人Email", "联系人关系"
+          ] %}
+          {% set names = ["cusname", "cusID", "cusphone", "address",
+            "contact_name", "contact_phone", "contact_email", "relation"
+          ] %}
+          <form class="pt-3" method="post" action="{{ url_for('customer.update') }}">
+            {% for i in range(8) %}
+            <div class="form-group row">
+              <label class="col-3 col-form-label text-right">{{ labels[i] }}</label>
+              <div class="col-8">
+                <input type="text" class="form-control" name="{{ names[i] }}" 
+                  value="{{ cus[names[i]] }}">
+              </div>
+            </div>
+            {% endfor %}
+            <div class="row">
+              <div class="col-11 w-100 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">提交</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% with messages = get_flashed_messages() %}
+    {% for message in messages %}
+    <div class="fixed-top d-flex justify-content-end m-3">
+      {% if "unsuccessfully" in message %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {% else %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {% endif %}
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  {% endwith %}
 </div>
 {% endblock %}

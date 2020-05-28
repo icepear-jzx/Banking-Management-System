@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, render_template, flash
+from flask import Blueprint, jsonify, request, render_template, flash, redirect, url_for
 from .models import Customer
 from . import db
 
@@ -51,7 +51,7 @@ def create():
         db.session.commit()
         init_form = {'cusID': '', 'cusname': '', 'cusphone': '', 'address': '',
         'contact_phone': '', 'contact_name': '', 'contact_email': '', 'relation': ''}
-        flash('Create new customer successfully!')
+        flash('Create new customer ' + cusID + ' successfully!')
         return render_template('customer/create.html', errors=errors, init_form=init_form)
     else:
         return render_template('customer/create.html', errors=errors, init_form=request.form)
@@ -59,8 +59,9 @@ def create():
 
 @bp.route('/search', methods=['GET'])
 def search_init():
+    init_form = {'cusID': '', 'cusname': '', 'cusphone': ''}
     customers = Customer.query.all()
-    return render_template('customer/search.html', customers=customers)
+    return render_template('customer/search.html', customers=customers, init_form=init_form)
 
 
 @bp.route('/search', methods=['POST'])
@@ -80,4 +81,54 @@ def search():
         if cusID or cusname or cusphone:
             customers = customers.filter((Customer.cusID == cusID) | (Customer.cusname == cusname) | 
                 (Customer.cusphone == cusphone))
-    return render_template('customer/search.html', customers=customers.all())
+    return render_template('customer/search.html', customers=customers.all(), init_form=request.form)
+
+
+@bp.route('/delete/<cusID>', methods=['GET'])
+def delete(cusID):
+    Customer.query.filter_by(cusID=cusID).delete()
+    db.session.commit()
+    return redirect(url_for('customer.search'))
+
+
+@bp.route('/update', methods=['POST'])
+def update():
+    errors = []
+    cusID = request.form['cusID']
+    cusname = request.form['cusname']
+    cusphone = request.form['cusphone']
+    address = request.form['address']
+    contact_phone = request.form['contact_phone']
+    contact_name = request.form['contact_name']
+    contact_email = request.form['contact_email']
+    relation = request.form['relation']
+    if len(cusID) != 18:
+        errors.append('cusID')
+    if len(cusname) == 0 or len(cusname) > 10:
+        errors.append('cusname')
+    if len(cusphone) != 11:
+        errors.append('cusphone')
+    if len(address) > 50:
+        errors.append('address')
+    if len(contact_phone) != 11:
+        errors.append('contact_phone')
+    if len(contact_name) == 0 or len(contact_name) > 10:
+        errors.append('contact_name')
+    if len(contact_email) > 0 and '@' not in contact_email:
+        errors.append('contact_email')
+    if len(relation) == 0 or len(relation) > 10:
+        errors.append('relation')
+    if not errors:
+        Customer.query.filter_by(cusID=cusID).delete()
+        new_customer = Customer(cusID=cusID, cusname=cusname, cusphone=cusphone, 
+            address=address, contact_name=contact_name, contact_phone=contact_phone, 
+            contact_email=contact_email, relation=relation)
+        db.session.add(new_customer)
+        db.session.commit()
+        init_form = {'cusID': '', 'cusname': '', 'cusphone': '', 'address': '',
+        'contact_phone': '', 'contact_name': '', 'contact_email': '', 'relation': ''}
+        flash('Update customer ' + cusID + ' successfully!')
+        return redirect(url_for('customer.search'))
+    else:
+        flash('Update customer ' + cusID + ' unsuccessfully!')
+        return redirect(url_for('customer.search'))
