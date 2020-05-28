@@ -9,7 +9,9 @@ bp = Blueprint('customer', __name__, url_prefix='/customer')
 @bp.route('/create', methods=['GET'])
 def create_init():
     errors = []
-    return render_template('customer/create.html', errors=errors)
+    init_form = {'cusID': '', 'cusname': '', 'cusphone': '', 'address': '',
+        'contact_phone': '', 'contact_name': '', 'contact_email': '', 'relation': ''}
+    return render_template('customer/create.html', errors=errors, init_form=init_form)
 
 
 @bp.route('/create', methods=['POST'])
@@ -45,7 +47,7 @@ def create():
             contact_email=contact_email, relation=relation)
         db.session.add(new_customer)
         db.session.commit()
-    return render_template('customer/create.html', errors=errors)
+    return render_template('customer/create.html', errors=errors, init_form=request.form)
 
 
 @bp.route('/search', methods=['GET'])

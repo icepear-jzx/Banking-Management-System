@@ -3,8 +3,8 @@
 {% block content %}
 <div class="container">
   <h2 class="mb-3 mt-2">新增客户</h2>
-  {% set labels = ["客户姓名", "身份证号", "联系电话", "家庭住址", 
-    "联系人姓名", "联系人手机号", "联系人Email", "联系人关系"
+  {% set labels = ["客户姓名*", "身份证号*", "联系电话*", "家庭住址", 
+    "联系人姓名*", "联系人手机号*", "联系人Email", "联系人关系*"
   ] %}
   {% set names = ["cusname", "cusID", "cusphone", "address",
     "contact_name", "contact_phone", "contact_email", "relation"
@@ -13,13 +13,19 @@
     {% for i in range(8) %}
     <div class="form-group row">
       <label class="col-2 col-form-label text-right">{{ labels[i] }}</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="{{ names[i] }}">
+      <div class="col-9">
+        {% if names[i] in errors %}
+        <input type="text" class="form-control border-danger" 
+          name="{{ names[i] }}" value="{{ init_form[names[i]] }}">
+        {% else %}
+        <input type="text" class="form-control" name="{{ names[i] }}" 
+          value="{{ init_form[names[i]] }}">
+        {% endif %}
       </div>
     </div>
     {% endfor %}
     <div class="row">
-      <div class="col-12 w-100 d-flex justify-content-end">
+      <div class="col-11 w-100 d-flex justify-content-end">
         <button type="submit" class="btn btn-primary mr-2">提交</button>
         <button type="submit" class="btn btn-secondary">重置</button>
       </div>
