@@ -119,14 +119,12 @@ def update():
     if len(relation) == 0 or len(relation) > 10:
         errors.append('relation')
     if not errors:
-        Customer.query.filter_by(cusID=cusID).delete()
-        new_customer = Customer(cusID=cusID, cusname=cusname, cusphone=cusphone, 
+        Customer.query.filter_by(cusID=cusID).update(dict(cusID=cusID, cusname=cusname, cusphone=cusphone, 
             address=address, contact_name=contact_name, contact_phone=contact_phone, 
-            contact_email=contact_email, relation=relation)
-        db.session.add(new_customer)
+            contact_email=contact_email, relation=relation))
         db.session.commit()
         init_form = {'cusID': '', 'cusname': '', 'cusphone': '', 'address': '',
-        'contact_phone': '', 'contact_name': '', 'contact_email': '', 'relation': ''}
+            'contact_phone': '', 'contact_name': '', 'contact_email': '', 'relation': ''}
         flash('Update customer ' + cusID + ' successfully!')
         return redirect(url_for('customer.search'))
     else:

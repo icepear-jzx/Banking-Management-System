@@ -1,4 +1,3 @@
-import enum
 from sqlalchemy import Column, String, Integer, Float, Date, DateTime, CHAR, Enum, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from . import db
@@ -9,7 +8,6 @@ class Cusforacc(db.Model):
     cusID = Column(CHAR(18), ForeignKey('customer.cusID'), primary_key=True)
     bank = Column(String(20), ForeignKey('bank.bankname'))
     visit = Column(DateTime)
-    accounttype = Column(Enum('saveacc', 'checkacc'))
 
 
 class Customer(db.Model):

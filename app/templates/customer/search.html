@@ -64,7 +64,7 @@
             "contact_name", "contact_phone", "contact_email", "relation"
           ] %}
           <form class="pt-3" method="post">
-            {% for i in range(8) %}
+            {% for i in range(labels|length) %}
             <div class="form-group row">
               <label class="col-3 col-form-label text-right">{{ labels[i] }}</label>
               <div class="col-8">
@@ -90,13 +90,21 @@
           {% set names = ["cusname", "cusID", "cusphone", "address",
             "contact_name", "contact_phone", "contact_email", "relation"
           ] %}
+          {% set editable = [false, false, true, true,
+            true, true, true, true
+          ] %}
           <form class="pt-3" method="post" action="{{ url_for('customer.update') }}">
-            {% for i in range(8) %}
+            {% for i in range(labels|length) %}
             <div class="form-group row">
               <label class="col-3 col-form-label text-right">{{ labels[i] }}</label>
               <div class="col-8">
+                {% if editable[i] %}
                 <input type="text" class="form-control" name="{{ names[i] }}" 
                   value="{{ cus[names[i]] }}">
+                {% else %}
+                <input type="text" class="form-control" name="{{ names[i] }}" 
+                  value="{{ cus[names[i]] }}" readonly>
+                {% endif %}
               </div>
             </div>
             {% endfor %}
