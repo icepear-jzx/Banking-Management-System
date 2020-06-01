@@ -3,6 +3,27 @@ from sqlalchemy.orm import relationship, backref
 from . import db
 
 
+class Cusforloan(db.Model):
+    loanID = Column(CHAR(4), ForeignKey('loan.loanID', ondelete='CASCADE'), primary_key=True)
+    cusID = Column(CHAR(18), ForeignKey('customer.cusID'), primary_key=True)
+
+
+class Payinfo(db.Model):
+    loanID = Column(CHAR(4), ForeignKey('loan.loanID', ondelete='CASCADE'), primary_key=True)
+    cusID = Column(CHAR(18), ForeignKey('customer.cusID'), primary_key=True)
+    money = Column(Float, primary_key=True)
+    paytime = Column(DateTime, primary_key=True)
+
+
+class Loan(db.Model):
+    loanID = Column(CHAR(4), primary_key=True)
+    money = Column(Float, nullable=False)
+    bank = Column(String(20), ForeignKey('bank.bankname'), nullable=False)
+    state = Column(Enum('waiting', 'going', 'finished'), nullable=False)
+    cusforloan = relationship(Cusforloan, foreign_keys=[Cusforloan.loanID])
+    payinfo = relationship(Payinfo, foreign_keys=[Payinfo.loanID, Payinfo.cusID, Payinfo.money, Payinfo.paytime])
+
+
 class Cusforacc(db.Model):
     accountID = Column(CHAR(6), ForeignKey('account.accountID'), primary_key=True)
     cusID = Column(CHAR(18), ForeignKey('customer.cusID'), primary_key=True)
@@ -22,6 +43,8 @@ class Customer(db.Model):
     loanres = Column(CHAR(18), ForeignKey('employee.empID'))
     accres = Column(CHAR(18), ForeignKey('employee.empID'))
     cusforacc = relationship(Cusforacc, foreign_keys=[Cusforacc.accountID, Cusforacc.cusID])
+    cusforloan = relationship(Cusforloan, foreign_keys=[Cusforloan.loanID, Cusforloan.cusID])
+    payinfo = relationship(Payinfo, foreign_keys=[Payinfo.loanID, Payinfo.cusID, Payinfo.money, Payinfo.paytime])
 
 
 class Employee(db.Model):
@@ -50,7 +73,8 @@ class Bank(db.Model):
     city = Column(String(20), nullable=False)
     money = Column(Float, nullable=False)
     departments = relationship(Department, foreign_keys=[Department.bank])
-    cusforaccs = relationship(Cusforacc, foreign_keys=[Cusforacc.bank])
+    cusforacc = relationship(Cusforacc, foreign_keys=[Cusforacc.bank])
+    loans = relationship(Loan, foreign_keys=[Loan.bank])
 
 
 class Saveacc(db.Model):
@@ -75,5 +99,5 @@ class Account(db.Model):
         uselist=False, passive_deletes=True)
     checkacc = relationship(Checkacc, foreign_keys=[Checkacc.accountID], 
         uselist=False, passive_deletes=True)
-    cusforacc = relationship(Cusforacc, foreign_keys=[Cusforacc.accountID], 
+    cusforacc = relationship(Cusforacc, foreign_keys=[Cusforacc.accountID, Cusforacc.cusID], 
         uselist=False, passive_deletes=True)

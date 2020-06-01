@@ -10,8 +10,8 @@ bp = Blueprint('account', __name__, url_prefix='/account')
 @bp.route('/create', methods=['GET'])
 def create_init():
     errors = []
-    init_form = {'accountID': '', 'cusID': '', 'money': '', 'settime': '', 'accounttype': '',
-        'money': '', 'bank': '', 'savetype': '', 'interestrate': '', 'overdraft': ''}
+    init_form = {'accountID': '', 'cusID': '', 'money': '', 'accounttype': '',
+        'bank': '', 'savetype': '', 'interestrate': '', 'overdraft': ''}
     return render_template('account/create.html', errors=errors, init_form=init_form)
 
 
@@ -114,10 +114,13 @@ def search():
 
 @bp.route('/delete/<accountID>', methods=['GET'])
 def delete(accountID):
+    Saveacc.query.filter_by(accountID=accountID).delete()
+    Checkacc.query.filter_by(accountID=accountID).delete()
+    Cusforacc.query.filter_by(accountID=accountID).delete()
     Account.query.filter_by(accountID=accountID).delete()
     db.session.commit()
     flash('Delete account ' + accountID + ' successfully!')
-    return redirect(url_for('account.search_init'))
+    return redirect(url_for('account.search'))
 
 
 @bp.route('/update', methods=['POST'])
