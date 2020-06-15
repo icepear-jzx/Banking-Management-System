@@ -2,32 +2,40 @@
 
 {% block content %}
 <div class="container">
-  <h2 class="mb-3 mt-2">查询账户</h2>
+  <h2 class="mb-3 mt-2">查询贷款</h2>
   <form class="form-inline mb-3" method="post">
     <div class="d-flex justify-content-between mb-2 w-100">
       <div class="form-group">
-        <label class="form-label mr-2">账户号</label>
-        <input type="text" class="form-control" name="accountID" value="{{ init_form['accountID'] }}">
+        <label class="form-label mr-2">贷款号</label>
+        <input type="text" class="form-control" name="loanID" value="{{ init_form['loanID'] }}">
       </div>
       <div class="form-group">
         <label class="form-label mr-2">身份证号</label>
         <input type="text" class="form-control" name="cusID" value="{{ init_form['cusID'] }}">
       </div>
       <div class="form-group">
-        <label class="form-label mr-2">账户类型</label>
-        <select class="form-control" name="accounttype">
-          {% if init_form['accounttype'] == "" %}
-          <option value="" selected>全部账户</option>
-          <option value="saveacc">储蓄账户</option>
-          <option value="checkacc">支票账户</option>
-          {% elif init_form['accounttype'] == "saveacc" %}
-          <option value="">全部账户</option>
-          <option value="saveacc" selected>储蓄账户</option>
-          <option value="checkacc">支票账户</option>
+        <label class="form-label mr-2">贷款状态</label>
+        <select class="form-control" name="state">
+          {% if init_form['state'] == "" %}
+          <option value="" selected>全部状态</option>
+          <option value="waiting">未开始发放</option>
+          <option value="going">发放中</option>
+          <option value="finished">已全部发放</option>
+          {% elif init_form['state'] == "waiting" %}
+          <option value="">全部状态</option>
+          <option value="waiting" selected>未开始发放</option>
+          <option value="going">发放中</option>
+          <option value="finished">已全部发放</option>
+          {% elif init_form['state'] == "going" %}
+          <option value="">全部状态</option>
+          <option value="waiting">未开始发放</option>
+          <option value="going" selected>发放中</option>
+          <option value="finished">已全部发放</option>
           {% else %}
-          <option value="">全部账户</option>
-          <option value="saveacc">储蓄账户</option>
-          <option value="checkacc" selected>支票账户</option>
+          <option value="">全部状态</option>
+          <option value="waiting">未开始发放</option>
+          <option value="going">发放中</option>
+          <option value="finished" selected>已全部发放</option>
           {% endif %}
         </select>
       </div>
@@ -40,40 +48,43 @@
       <thead>
         <tr class="text-center">
           <th scope="col">#</th>
-          <th scope="col">账户号</th>
+          <th scope="col">贷款号</th>
           <th scope="col">身份证号</th>
-          <th scope="col">余额</th>
-          <th scope="col">开户银行</th>
-          <th scope="col">账户类型</th>
+          <th scope="col">贷款金额</th>
+          <th scope="col">贷款银行</th>
+          <th scope="col">贷款状态</th>
           <th scope="col">操作</th>
         </tr>
       </thead>
       <tbody>
-        {% for acc in accounts %}
+        {% for loan in loans %}
         <tr class="text-center">
-          <th class="align-middle" scope="row">{{ accounts.index(acc) }}</th>
-          <td class="align-middle">{{ acc.accountID }}</td>
-          <td class="align-middle">{{ acc.cusID }}</td>
-          <td class="align-middle">{{ acc.money }}</td>
-          <td class="align-middle">{{ acc.bank }}</td>
-          {% if acc.accounttype == "saveacc" %}
-          <td class="align-middle">储蓄账户</td>
+          <th class="align-middle" scope="row">{{ loans.index(loan) }}</th>
+          <td class="align-middle">{{ loan.loanID }}</td>
+          <td class="align-middle">{{ loan.cusID }}</td>
+          <td class="align-middle">{{ loan.money }}</td>
+          <td class="align-middle">{{ loan.bank }}</td>
+          {% if loan.state == "waiting" %}
+          <td class="align-middle">未开始发放</td>
+          {% elif loan.state == "going" %}
+          <td class="align-middle">发放中</td>
           {% else %}
-          <td class="align-middle">支票账户</td>
+          <td class="align-middle">已全部发放</td>
           {% endif %}
           <td>
             <button type="submit" class="btn btn-sm btn-primary" 
-              data-toggle="modal" data-target="#detail{{ acc.accountID }}">详细</button>
+              data-toggle="modal" data-target="#detail{{ loan.loanID }}">详细</button>
             <button type="submit" class="btn btn-sm btn-primary" 
-              data-toggle="modal" data-target="#edit{{ acc.accountID }}">编辑</button>
+              data-toggle="modal" data-target="#edit{{ loan.loanID }}">编辑</button>
             <a type="submit" class="btn btn-sm btn-danger" 
-              href="{{ url_for('account.delete', accountID=acc.accountID) }}">删除</a>
+              href="{{ url_for('loan.delete', loanID=loan.loanID) }}">删除</a>
           </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+  {#
   {% for acc in accounts %}
     {% if acc.accounttype == "saveacc" %}
     <div class="modal fade bd-example-modal-lg" id="detail{{ acc.accountID }}" tabindex="-1" aria-hidden="true">
@@ -256,6 +267,7 @@
     </div>
     {% endif %}
   {% endfor %}
+  #}
   {% with messages = get_flashed_messages() %}
     {% for message in messages %}
     <div class="fixed-top d-flex justify-content-end m-3">

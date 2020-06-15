@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
   <h2 class="mb-3 mt-2">新增贷款</h2>
-  {% set labels = ["贷款号*", "身份证号*", "余额*", "贷款银行*", "贷款状态*"] %}
+  {% set labels = ["贷款号*", "身份证号*", "贷款金额*", "贷款银行*", "贷款状态*"] %}
   {% set names = ["loanID", "cusID", "money", "bank", "state"] %}
   <form method="post">
     {% for i in range(labels|length) %}

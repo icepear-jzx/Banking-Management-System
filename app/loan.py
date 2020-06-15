@@ -49,57 +49,43 @@ def create():
 
 @bp.route('/search', methods=['GET'])
 def search_init():
-    init_form = {'accountID': '', 'accounttype': '', 'cusID': ''}
-    accounts = Account.query.all()
-    for acc in accounts:
-        setattr(acc, 'bank', acc.cusforacc.bank)
-        setattr(acc, 'cusID', acc.cusforacc.cusID)
-        if acc.accounttype == 'saveacc':
-            setattr(acc, 'interestrate', acc.saveacc.interestrate)
-            setattr(acc, 'savetype', acc.saveacc.savetype)
-        else:
-            setattr(acc, 'overdraft', acc.checkacc.overdraft)
-    return render_template('account/search.html', accounts=accounts, init_form=init_form)
+    init_form = {'loanID': '', 'cusID': '', 'money': '', 'bank': '', 'state': ''}
+    loans = Loan.query.all()
+    for loan in loans:
+        setattr(loan, 'cusID', loan.cusforloan[0].cusID)
+    return render_template('loan/search.html', loans=loans, init_form=init_form)
 
 
 @bp.route('/search', methods=['POST'])
 def search():
     cusID = request.form['cusID']
-    accountID = request.form['accountID']
-    accounttype = request.form['accounttype']
-    accounts = Account.query.filter_by()
+    loanID = request.form['loanID']
+    state = request.form['state']
+    loans = Loan.query.filter_by()
     if 'and' in request.form:
         if cusID:
-            accounts = accounts.filter(Account.cusforacc.has(Cusforacc.cusID == cusID))
-        if accountID:
-            accounts = accounts.filter_by(accountID=accountID)
-        if accounttype:
-            accounts = accounts.filter_by(accounttype=accounttype)
+            loans = loans.filter(Loan.cusforloan.any(Cusforloan.cusID == cusID))
+        if loanID:
+            loans = loans.filter_by(loanID=loanID)
+        if state:
+            loans = loans.filter_by(state=state)
     else:
-        if cusID or accountID or accounttype:
-            accounts = accounts.filter(Account.cusforacc.has(Cusforacc.cusID == cusID) | 
-                (Account.accountID == accountID) | (Account.accounttype == accounttype))
-    accounts = accounts.all()
-    for acc in accounts:
-        setattr(acc, 'bank', acc.cusforacc.bank)
-        setattr(acc, 'cusID', acc.cusforacc.cusID)
-        if acc.accounttype == 'saveacc':
-            setattr(acc, 'interestrate', acc.saveacc.interestrate)
-            setattr(acc, 'savetype', acc.saveacc.savetype)
-        else:
-            setattr(acc, 'overdraft', acc.checkacc.overdraft)
-    return render_template('account/search.html', accounts=accounts, init_form=request.form)
+        if cusID or loanID or state:
+            loans = loans.filter(Loan.cusforloan.any(Cusforloan.cusID == cusID) | 
+                (Loan.loanID == loanID) | (Loan.state == state))
+    loans = loans.all()
+    for loan in loans:
+        setattr(loan, 'cusID', loan.cusforloan[0].cusID)
+    return render_template('loan/search.html', loans=loans, init_form=request.form)
 
 
-@bp.route('/delete/<accountID>', methods=['GET'])
-def delete(accountID):
-    Saveacc.query.filter_by(accountID=accountID).delete()
-    Checkacc.query.filter_by(accountID=accountID).delete()
-    Cusforacc.query.filter_by(accountID=accountID).delete()
-    Account.query.filter_by(accountID=accountID).delete()
+@bp.route('/delete/<loanID>', methods=['GET'])
+def delete(loanID):
+    Cusforloan.query.filter_by(loanID=loanID).delete()
+    Loan.query.filter_by(loanID=loanID).delete()
     db.session.commit()
-    flash('Delete account ' + accountID + ' successfully!')
-    return redirect(url_for('account.search'))
+    flash('Delete loan ' + loanID + ' successfully!')
+    return redirect(url_for('loan.search'))
 
 
 @bp.route('/update', methods=['POST'])

@@ -20,7 +20,7 @@ class Loan(db.Model):
     money = Column(Float, nullable=False)
     bank = Column(String(20), ForeignKey('bank.bankname'), nullable=False)
     state = Column(Enum('waiting', 'going', 'finished'), nullable=False)
-    cusforloan = relationship(Cusforloan, foreign_keys=[Cusforloan.loanID])
+    cusforloan = relationship(Cusforloan, foreign_keys=[Cusforloan.loanID, Cusforloan.cusID])
     payinfo = relationship(Payinfo, foreign_keys=[Payinfo.loanID, Payinfo.cusID, Payinfo.money, Payinfo.paytime])
 
 
