@@ -3,64 +3,19 @@
 {% block content %}
 <div class="container">
   <h2 class="mb-3 mt-2">新增贷款</h2>
-  {% set labels = ["贷款号*", "身份证号*", "贷款金额*", "贷款银行*", "贷款状态*"] %}
-  {% set names = ["loanID", "cusID", "money", "bank", "state"] %}
+  {% set labels = ["贷款号*", "身份证号*", "贷款金额*", "贷款银行*"] %}
+  {% set names = ["loanID", "cusID", "money", "bank"] %}
   <form method="post">
     {% for i in range(labels|length) %}
     <div class="form-group row">
       <label class="col-2 col-form-label text-right">{{ labels[i] }}</label>
       <div class="col-9">
-        {% if names[i] == "state" %}
-        <div class="d-flex align-items-center h-100">
-          {% if init_form["state"] == "going" %}
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="state" id="waiting" value="waiting">
-            <label class="form-check-label" for="waiting">未开始发放</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="state" id="going" value="going" checked>
-            <label class="form-check-label" for="going">发放中</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="state" id="finished" value="finished">
-            <label class="form-check-label" for="finished">已全部发放</label>
-          </div>
-          {% elif init_form["state"] == "finished" %}
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="state" id="waiting" value="waiting">
-            <label class="form-check-label" for="waiting">未开始发放</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="state" id="going" value="going">
-            <label class="form-check-label" for="going">发放中</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="state" id="finished" value="finished" checked>
-            <label class="form-check-label" for="finished">已全部发放</label>
-          </div>
-          {% else %}
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="state" id="waiting" value="waiting" checked>
-            <label class="form-check-label" for="waiting">未开始发放</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="state" id="going" value="going">
-            <label class="form-check-label" for="going">发放中</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="state" id="finished" value="finished">
-            <label class="form-check-label" for="finished">已全部发放</label>
-          </div>
-          {% endif %}
-        </div>
+        {% if names[i] in errors %}
+        <input type="text" class="form-control border-danger" 
+          name="{{ names[i] }}" value="{{ init_form[names[i]] }}">
         {% else %}
-          {% if names[i] in errors %}
-          <input type="text" class="form-control border-danger" 
-            name="{{ names[i] }}" value="{{ init_form[names[i]] }}">
-          {% else %}
-          <input type="text" class="form-control" name="{{ names[i] }}" 
-            value="{{ init_form[names[i]] }}">
-          {% endif %}
+        <input type="text" class="form-control" name="{{ names[i] }}" 
+          value="{{ init_form[names[i]] }}">
         {% endif %}
       </div>
     </div>

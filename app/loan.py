@@ -21,7 +21,7 @@ def create():
     cusID = request.form['cusID']
     money = request.form['money']
     bank = request.form['bank']
-    state = request.form['state']
+    state = 'waiting'
     if len(loanID) != 4:
         errors.append('loanID')
     try:
@@ -35,7 +35,7 @@ def create():
     if not Customer.query.filter_by(cusID=cusID).first():
         errors.append('cusID')
     if not errors:
-        new_loan = Loan(loanID=loanID, money=money, bank=bank, state=state)
+        new_loan = Loan(loanID=loanID, money=money, rest_money=money, bank=bank, state=state)
         db.session.add(new_loan)
         new_cusforloan = Cusforloan(loanID=loanID, cusID=cusID)
         db.session.add(new_cusforloan)
@@ -91,50 +91,35 @@ def delete(loanID):
 @bp.route('/update', methods=['POST'])
 def update():
     errors = []
-    accountID = request.form['accountID']
+    loanID = request.form['loanID']
     cusID = request.form['cusID']
     money = request.form['money']
-    bank = request.form['bank']
-    accounttype = request.form['accounttype']
-    if accounttype == 'saveacc':
-        savetype = request.form['savetype']
-        interestrate = request.form['interestrate']
-    else:
-        overdraft = request.form['overdraft']
-    if len(accountID) != 6:
-        errors.append('accountID')
+    if len(loanID) != 4:
+        errors.append('loanID')
     try:
         money = float(money)
     except:
         errors.append('money')
-    if len(bank) == 0 or len(bank) > 20:
-        errors.append('bank')
-    if accounttype == 'saveacc':
-        try:
-            interestrate = float(interestrate)
-        except:
-            errors.append('interestrate')
+    if money < 0:
+        errors.append('money')
+    loan = Loan.query.filter_by(loanID=loanID).first()
+    if not loan:
+        errors.append('loanID')
+    elif loan.state == 'finished':
+        errors.append('loanID')
+    elif loan.rest_money < money:
+        errors.append('loanID')
+    if loan.rest_money - money != 0:
+        state = 'going'
     else:
-        try:
-            overdraft = float(overdraft)
-        except:
-            errors.append('overdraft')
-    if not Customer.query.filter_by(cusID=cusID).first():
-        errors.append('cusID')
+        state = 'finished'
     if not errors:
-        Account.query.filter_by(accountID=accountID).update(
-            dict(accountID=accountID, money=money, settime=datetime.now(), accounttype=accounttype))
-        if accounttype == 'saveacc':
-            Saveacc.query.filter_by(accountID=accountID).update(
-                dict(accountID=accountID, interestrate=interestrate, savetype=savetype))
-        else:
-            Checkacc.query.filter_by(accountID=accountID).update(
-                dict(accountID=accountID, overdraft=overdraft))
-        Cusforacc.query.filter_by(accountID=accountID).update(
-            dict(accountID=accountID, cusID=cusID, bank=bank, visit=datetime.now()))
+        Loan.query.filter_by(loanID=loanID).update(dict(state=state, rest_money=loan.rest_money-money))
+        new_payinfo = Payinfo(loanID=loanID, cusID=cusID, money=money, paytime=datetime.now())
+        db.session.add(new_payinfo)
         db.session.commit()
-        flash('Update new account ' + accountID + ' successfully!')
-        return redirect(url_for('account.search'))
+        flash('Update new loan ' + loanID + ' successfully!')
+        return redirect(url_for('loan.search'))
     else:
-        flash('Update new account ' + accountID + ' unsuccessfully!')
-        return redirect(url_for('account.search'))
+        flash('Update new loan ' + loanID + ' unsuccessfully!')
+        return redirect(url_for('loan.search'))

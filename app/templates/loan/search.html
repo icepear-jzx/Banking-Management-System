@@ -51,6 +51,7 @@
           <th scope="col">贷款号</th>
           <th scope="col">身份证号</th>
           <th scope="col">贷款金额</th>
+          <th scope="col">剩余金额</th>
           <th scope="col">贷款银行</th>
           <th scope="col">贷款状态</th>
           <th scope="col">操作</th>
@@ -63,6 +64,7 @@
           <td class="align-middle">{{ loan.loanID }}</td>
           <td class="align-middle">{{ loan.cusID }}</td>
           <td class="align-middle">{{ loan.money }}</td>
+          <td class="align-middle">{{ loan.rest_money }}</td>
           <td class="align-middle">{{ loan.bank }}</td>
           {% if loan.state == "waiting" %}
           <td class="align-middle">未开始发放</td>
@@ -73,9 +75,9 @@
           {% endif %}
           <td>
             <button type="submit" class="btn btn-sm btn-primary" 
-              data-toggle="modal" data-target="#detail{{ loan.loanID }}">详细</button>
+              data-toggle="modal" data-target="#detail{{ loan.loanID + loan.cusID }}">详细</button>
             <button type="submit" class="btn btn-sm btn-primary" 
-              data-toggle="modal" data-target="#edit{{ loan.loanID }}">编辑</button>
+              data-toggle="modal" data-target="#edit{{ loan.loanID + loan.cusID }}">发放贷款</button>
             <a type="submit" class="btn btn-sm btn-danger" 
               href="{{ url_for('loan.delete', loanID=loan.loanID) }}">删除</a>
           </td>
@@ -84,190 +86,109 @@
       </tbody>
     </table>
   </div>
-  {#
-  {% for acc in accounts %}
-    {% if acc.accounttype == "saveacc" %}
-    <div class="modal fade bd-example-modal-lg" id="detail{{ acc.accountID }}" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            {% set labels = ["账户号", "身份证号", "余额", "开户银行", 
-              "账户类型", "货币类型", "利率"
-            ] %}
-            {% set names = ["accountID", "cusID", "money", "bank",
-              "accounttype", "savetype", "interestrate"
-            ] %}
-            <form class="pt-3" method="post">
-              {% for i in range(labels|length) %}
-              <div class="form-group row">
-                <label class="col-3 col-form-label text-right">{{ labels[i] }}</label>
-                <div class="col-8">
-                  {% if names[i] == "accounttype" %}
-                  <div class="d-flex align-items-center h-100">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="accounttype" id="saveacc" value="saveacc" checked>
-                      <label class="form-check-label" for="saveacc">储蓄账户</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="accounttype" id="checkacc" value="checkacc" disabled>
-                      <label class="form-check-label" for="checkacc">支票账户</label>
-                    </div>
+  {% for loan in loans %}
+  <div class="modal fade bd-example-modal-lg" id="detail{{ loan.loanID + loan.cusID }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          {% set labels = ["贷款号", "身份证号", "贷款金额", "剩余金额", "贷款银行", "贷款状态"] %}
+          {% set names = ["loanID", "cusID", "money", "reat_money", "bank", "state"] %}
+          <form class="pt-3" method="post">
+            {% for i in range(labels|length) %}
+            <div class="form-group row">
+              <label class="col-2 col-form-label text-right">{{ labels[i] }}</label>
+              <div class="col-9">
+                {% if names[i] == "state" %}
+                <div class="d-flex align-items-center h-100">
+                  {% if loan.state == "going" %}
+                  <div class="form-check form-check-inline">
+                    <input disabled class="form-check-input" type="radio" name="state" id="waiting" value="waiting">
+                    <label class="form-check-label" for="waiting">未开始发放</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input disabled class="form-check-input" type="radio" name="state" id="going" value="going" checked>
+                    <label class="form-check-label" for="going">发放中</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input disabled class="form-check-input" type="radio" name="state" id="finished" value="finished">
+                    <label class="form-check-label" for="finished">已全部发放</label>
+                  </div>
+                  {% elif loan.state == "finished" %}
+                  <div class="form-check form-check-inline">
+                    <input disabled class="form-check-input" type="radio" name="state" id="waiting" value="waiting">
+                    <label class="form-check-label" for="waiting">未开始发放</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input disabled class="form-check-input" type="radio" name="state" id="going" value="going">
+                    <label class="form-check-label" for="going">发放中</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input disabled class="form-check-input" type="radio" name="state" id="finished" value="finished" checked>
+                    <label class="form-check-label" for="finished">已全部发放</label>
                   </div>
                   {% else %}
-                  <input type="text" class="form-control" name="{{ names[i] }}" value="{{ acc[names[i]] }}" readonly>
+                  <div class="form-check form-check-inline">
+                    <input disabled class="form-check-input" type="radio" name="state" id="waiting" value="waiting" checked>
+                    <label class="form-check-label" for="waiting">未开始发放</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input disabled class="form-check-input" type="radio" name="state" id="going" value="going">
+                    <label class="form-check-label" for="going">发放中</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input disabled class="form-check-input" type="radio" name="state" id="finished" value="finished">
+                    <label class="form-check-label" for="finished">已全部发放</label>
+                  </div>
                   {% endif %}
                 </div>
+                {% else %}
+                  <input readonly type="text" class="form-control" name="{{ names[i] }}" 
+                    value="{{ loan[names[i]] }}">
+                {% endif %}
               </div>
-              {% endfor %}
-            </form>
-          </div>
+            </div>
+            {% endfor %}
+          </form>
         </div>
       </div>
     </div>
-    {% else %}
-    <div class="modal fade bd-example-modal-lg" id="detail{{ acc.accountID }}" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            {% set labels = ["账户号", "身份证号", "余额", "开户银行", 
-              "账户类型", "透支额度"
-            ] %}
-            {% set names = ["accountID", "cusID", "money", "bank",
-              "accounttype", "overdraft"
-            ] %}
-            <form class="pt-3" method="post">
-              {% for i in range(labels|length) %}
-              <div class="form-group row">
-                <label class="col-3 col-form-label text-right">{{ labels[i] }}</label>
-                <div class="col-8">
-                  {% if names[i] == "accounttype" %}
-                  <div class="d-flex align-items-center h-100">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="accounttype" id="saveacc" value="saveacc" disabled>
-                      <label class="form-check-label" for="saveacc">储蓄账户</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="accounttype" id="checkacc" value="checkacc" checked>
-                      <label class="form-check-label" for="checkacc">支票账户</label>
-                    </div>
-                  </div>
-                  {% else %}
-                  <input type="text" class="form-control" name="{{ names[i] }}" value="{{ acc[names[i]] }}" readonly>
-                  {% endif %}
-                </div>
-              </div>
-              {% endfor %}
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
+  </div>
   {% endfor %}
-  {% for acc in accounts %}
-    {% if acc.accounttype == "saveacc" %}
-    <div class="modal fade bd-example-modal-lg" id="edit{{ acc.accountID }}" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            {% set labels = ["账户号", "身份证号", "余额", "开户银行", 
-              "账户类型", "货币类型", "利率"
-            ] %}
-            {% set names = ["accountID", "cusID", "money", "bank",
-              "accounttype", "savetype", "interestrate"
-            ] %}
-            {% set editable = [false, false, true, false,
-              false, true, true
-            ] %}
-            <form class="pt-3" method="post" action="{{ url_for('account.update') }}">
-              {% for i in range(labels|length) %}
-              <div class="form-group row">
-                <label class="col-3 col-form-label text-right">{{ labels[i] }}</label>
-                <div class="col-8">
-                  {% if names[i] == "accounttype" %}
-                  <div class="d-flex align-items-center h-100">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="accounttype" id="saveacc" value="saveacc" checked>
-                      <label class="form-check-label" for="saveacc">储蓄账户</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="accounttype" id="checkacc" value="checkacc" disabled>
-                      <label class="form-check-label" for="checkacc">支票账户</label>
-                    </div>
-                  </div>
-                  {% else %}
-                    {% if editable[i] %}
-                    <input type="text" class="form-control" name="{{ names[i] }}" value="{{ acc[names[i]] }}">
-                    {% else %}
-                    <input type="text" class="form-control" name="{{ names[i] }}" value="{{ acc[names[i]] }}" readonly>
-                    {% endif %}
-                  {% endif %}
-                </div>
+  {% for loan in loans %}
+  <div class="modal fade bd-example-modal-lg" id="edit{{ loan.loanID + loan.cusID }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form class="pt-3" method="post"  action="{{ url_for('loan.update') }}">
+            <div class="form-group row">
+              <label class="col-2 col-form-label text-right">贷款号</label>
+              <div class="col-9">
+                <input readonly type="text" class="form-control" name="loanID" value="{{ loan.loanID }}">
               </div>
-              {% endfor %}
-              <div class="row">
-                <div class="col-11 w-100 d-flex justify-content-end">
-                  <button type="submit" class="btn btn-primary">提交</button>
-                </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-2 col-form-label text-right">身份证号</label>
+              <div class="col-9">
+                <input readonly type="text" class="form-control" name="cusID" value="{{ loan.cusID }}">
               </div>
-            </form>
-          </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-2 col-form-label text-right">发放金额</label>
+              <div class="col-9">
+                <input type="text" class="form-control" name="money" value="0">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-11 w-100 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary mr-2">提交</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-    {% else %}
-    <div class="modal fade bd-example-modal-lg" id="edit{{ acc.accountID }}" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            {% set labels = ["账户号", "身份证号", "余额", "开户银行", 
-              "账户类型", "透支额度"
-            ] %}
-            {% set names = ["accountID", "cusID", "money", "bank",
-              "accounttype", "overdraft"
-            ] %}
-            {% set editable = [false, false, true, false,
-              false, true
-            ] %}
-            <form class="pt-3" method="post" action="{{ url_for('account.update') }}">
-              {% for i in range(labels|length) %}
-              <div class="form-group row">
-                <label class="col-3 col-form-label text-right">{{ labels[i] }}</label>
-                <div class="col-8">
-                  {% if names[i] == "accounttype" %}
-                  <div class="d-flex align-items-center h-100">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="accounttype" id="saveacc" value="saveacc" disabled>
-                      <label class="form-check-label" for="saveacc">储蓄账户</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="accounttype" id="checkacc" value="checkacc" checked>
-                      <label class="form-check-label" for="checkacc">支票账户</label>
-                    </div>
-                  </div>
-                  {% else %}
-                    {% if editable[i] %}
-                    <input type="text" class="form-control" name="{{ names[i] }}" value="{{ acc[names[i]] }}">
-                    {% else %}
-                    <input type="text" class="form-control" name="{{ names[i] }}" value="{{ acc[names[i]] }}" readonly>
-                    {% endif %}
-                  {% endif %}
-                </div>
-              </div>
-              {% endfor %}
-              <div class="row">
-                <div class="col-11 w-100 d-flex justify-content-end">
-                  <button type="submit" class="btn btn-primary">提交</button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
+  </div>
   {% endfor %}
-  #}
   {% with messages = get_flashed_messages() %}
     {% for message in messages %}
     <div class="fixed-top d-flex justify-content-end m-3">

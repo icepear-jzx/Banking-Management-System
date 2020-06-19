@@ -18,6 +18,7 @@ class Payinfo(db.Model):
 class Loan(db.Model):
     loanID = Column(CHAR(4), primary_key=True)
     money = Column(Float, nullable=False)
+    rest_money = Column(Float, nullable=False)
     bank = Column(String(20), ForeignKey('bank.bankname'), nullable=False)
     state = Column(Enum('waiting', 'going', 'finished'), nullable=False)
     cusforloan = relationship(Cusforloan, foreign_keys=[Cusforloan.loanID, Cusforloan.cusID])
