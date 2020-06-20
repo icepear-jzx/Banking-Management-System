@@ -35,7 +35,7 @@ def create():
     if not Customer.query.filter_by(cusID=cusID).first():
         errors.append('cusID')
     if not errors:
-        new_loan = Loan(loanID=loanID, money=money, rest_money=money, bank=bank, state=state)
+        new_loan = Loan(loanID=loanID, settime=datetime.now(), money=money, rest_money=money, bank=bank, state=state)
         db.session.add(new_loan)
         new_cusforloan = Cusforloan(loanID=loanID, cusID=cusID)
         db.session.add(new_cusforloan)

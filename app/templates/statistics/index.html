@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-3 mt-2">{{ title }}</h2>
+  <h3 class="mb-3 mt-2">储蓄金额</h3>
+  <canvas id="acc-stat-chart"></canvas>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr class="text-center">
+          <th scope="col">{{ span }}</th>
+          {% for bank in banks %}
+          <th scope="col">{{ bank }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for stat in money_stat %}
+        <tr class="text-center">
+          <th class="align-middle" scope="row">{{ stat.period }}</th>
+          {% for bank in banks %}
+          <td class="align-middle">{{ stat.acc[bank] }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <h3 class="mb-3 mt-2">贷款金额</h3>
+  <canvas id="loan-stat-chart"></canvas>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr class="text-center">
+          <th scope="col">{{ span }}</th>
+          {% for bank in banks %}
+          <th scope="col">{{ bank }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for stat in money_stat %}
+        <tr class="text-center">
+          <th class="align-middle" scope="row">{{ stat.period }}</th>
+          {% for bank in banks %}
+          <td class="align-middle">{{ stat.loan[bank] }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <h3 class="mb-3 mt-2">注册用户</h3>
+  <canvas id="cus-stat-chart"></canvas>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr class="text-center">
+          <th scope="col">{{ span }}</th>
+          {% for bank in banks %}
+          <th scope="col">{{ bank }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for stat in cus_stat %}
+        <tr class="text-center">
+          <th class="align-middle" scope="row">{{ stat.period }}</th>
+          {% for bank in banks %}
+          <td class="align-middle">{{ stat.number[bank] }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>
+  var banks = {{ banks | tojson }};
+  var colors = {{ colors | tojson }};
+  var money_stat = {{ money_stat | tojson }};
+  var cus_stat = {{ cus_stat | tojson }};
+
+  var ctx = document.getElementById('acc-stat-chart');
+  var data = {
+    labels: [],
+    datasets: []
+  };
+  for (bank of banks) {
+    data.datasets.push({
+      label: bank, data: [], fill: false, borderColor: colors[banks.indexOf(bank)]
+    })
+  }
+  for (stat of money_stat) {
+    data.labels.push(stat.period);
+    for (bank of banks) {
+      data.datasets[banks.indexOf(bank)].data.push(stat.acc[bank]);
+    }
+  }
+  console.log(data);
+  var acc_stat_chart = new Chart(ctx, {
+    type: 'line',
+    data: data
+  });
+
+  var ctx = document.getElementById('loan-stat-chart');
+  var data = {
+    labels: [],
+    datasets: []
+  };
+  for (bank of banks) {
+    data.datasets.push({
+      label: bank, data: [], fill: false, borderColor: colors[banks.indexOf(bank)]
+    })
+  }
+  for (stat of money_stat) {
+    data.labels.push(stat.period);
+    for (bank of banks) {
+      data.datasets[banks.indexOf(bank)].data.push(stat.loan[bank]);
+    }
+  }
+  console.log(data);
+  var loan_stat_chart = new Chart(ctx, {
+    type: 'line',
+    data: data
+  });
+
+  var ctx = document.getElementById('cus-stat-chart');
+  var data = {
+    labels: [],
+    datasets: []
+  };
+  for (bank of banks) {
+    data.datasets.push({
+      label: bank, data: [], fill: false, borderColor: colors[banks.indexOf(bank)]
+    })
+  }
+  for (stat of cus_stat) {
+    data.labels.push(stat.period);
+    for (bank of banks) {
+      data.datasets[banks.indexOf(bank)].data.push(stat.number[bank]);
+    }
+  }
+  console.log(data);
+  var cus_stat_chart = new Chart(ctx, {
+    type: 'line',
+    data: data
+  });
+</script>
+{% endblock %}

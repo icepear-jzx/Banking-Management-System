@@ -9,7 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
   <title>银行业务管理系统</title>
 </head>
 
@@ -22,13 +22,13 @@
     ["新增客户", "查询客户"],
     ["账户开户", "查询账户"],
     ["新增贷款", "查询贷款"],
-    ["业务金额", "用户统计"]
+    ["年度数据", "季度数据", "月度数据"]
   ] %}
   {% set urls = [
     ["customer.create", "customer.search_init"],
     ["account.create", "account.search_init"],
     ["loan.create", "loan.search_init"],
-    ["statistics.money", "statistics.customers"]
+    ["statistics.year", "statistics.quarter", "statistics.month"]
   ]%}
   <div class="container-fluid h-100">
     <div class="row h-100">

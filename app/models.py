@@ -17,6 +17,7 @@ class Payinfo(db.Model):
 
 class Loan(db.Model):
     loanID = Column(CHAR(4), primary_key=True)
+    settime = Column(DateTime)
     money = Column(Float, nullable=False)
     rest_money = Column(Float, nullable=False)
     bank = Column(String(20), ForeignKey('bank.bankname'), nullable=False)
@@ -34,6 +35,8 @@ class Cusforacc(db.Model):
 
 class Customer(db.Model):
     cusID = Column(CHAR(18), primary_key=True)
+    settime = Column(DateTime)
+    bank = Column(String(20), ForeignKey('bank.bankname'), nullable=False)
     cusname = Column(String(10), nullable=False)
     cusphone = Column(CHAR(11), nullable=False)
     address = Column(String(50))
@@ -76,6 +79,7 @@ class Bank(db.Model):
     departments = relationship(Department, foreign_keys=[Department.bank])
     cusforacc = relationship(Cusforacc, foreign_keys=[Cusforacc.bank])
     loans = relationship(Loan, foreign_keys=[Loan.bank])
+    customers = relationship(Customer, foreign_keys=[Customer.bank])
 
 
 class Saveacc(db.Model):

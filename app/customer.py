@@ -1,3 +1,4 @@
+import datetime
 from flask import Blueprint, jsonify, request, render_template, flash, redirect, url_for
 from .models import Customer
 from . import db
@@ -9,7 +10,7 @@ bp = Blueprint('customer', __name__, url_prefix='/customer')
 @bp.route('/create', methods=['GET'])
 def create_init():
     errors = []
-    init_form = {'cusID': '', 'cusname': '', 'cusphone': '', 'address': '',
+    init_form = {'cusID': '', 'cusname': '', 'bank': '', 'cusphone': '', 'address': '',
         'contact_phone': '', 'contact_name': '', 'contact_email': '', 'relation': ''}
     return render_template('customer/create.html', errors=errors, init_form=init_form)
 
@@ -18,6 +19,7 @@ def create_init():
 def create():
     errors = []
     cusID = request.form['cusID']
+    bank = request.form['bank']
     cusname = request.form['cusname']
     cusphone = request.form['cusphone']
     address = request.form['address']
@@ -27,6 +29,8 @@ def create():
     relation = request.form['relation']
     if len(cusID) != 18:
         errors.append('cusID')
+    if len(bank) == 0 or len(bank) > 20:
+        errors.append('bank')
     if len(cusname) == 0 or len(cusname) > 10:
         errors.append('cusname')
     if len(cusphone) != 11:
@@ -44,13 +48,13 @@ def create():
     if Customer.query.filter_by(cusID=cusID).first():
         errors.append('cusID')
     if not errors:
-        new_customer = Customer(cusID=cusID, cusname=cusname, cusphone=cusphone, 
+        new_customer = Customer(cusID=cusID, settime=datetime.now(), bank=bank, cusname=cusname, cusphone=cusphone, 
             address=address, contact_name=contact_name, contact_phone=contact_phone, 
             contact_email=contact_email, relation=relation)
         db.session.add(new_customer)
         db.session.commit()
-        init_form = {'cusID': '', 'cusname': '', 'cusphone': '', 'address': '',
-        'contact_phone': '', 'contact_name': '', 'contact_email': '', 'relation': ''}
+        init_form = {'cusID': '', 'cusname': '', 'bank': '', 'cusphone': '', 'address': '',
+            'contact_phone': '', 'contact_name': '', 'contact_email': '', 'relation': ''}
         flash('Create new customer ' + cusID + ' successfully!')
         return render_template('customer/create.html', errors=errors, init_form=init_form)
     else:
@@ -95,6 +99,7 @@ def delete(cusID):
 def update():
     errors = []
     cusID = request.form['cusID']
+    bank = request.form['bank']
     cusname = request.form['cusname']
     cusphone = request.form['cusphone']
     address = request.form['address']
@@ -104,6 +109,8 @@ def update():
     relation = request.form['relation']
     if len(cusID) != 18:
         errors.append('cusID')
+    if len(bank) == 0 or len(bank) > 20:
+        errors.append('bank')
     if len(cusname) == 0 or len(cusname) > 10:
         errors.append('cusname')
     if len(cusphone) != 11:
@@ -119,11 +126,11 @@ def update():
     if len(relation) == 0 or len(relation) > 10:
         errors.append('relation')
     if not errors:
-        Customer.query.filter_by(cusID=cusID).update(dict(cusID=cusID, cusname=cusname, cusphone=cusphone, 
+        Customer.query.filter_by(cusID=cusID).update(dict(cusID=cusID, bank=bank, cusname=cusname, cusphone=cusphone, 
             address=address, contact_name=contact_name, contact_phone=contact_phone, 
             contact_email=contact_email, relation=relation))
         db.session.commit()
-        init_form = {'cusID': '', 'cusname': '', 'cusphone': '', 'address': '',
+        init_form = {'cusID': '', 'cusname': '', 'bank': '', 'cusphone': '', 'address': '',
             'contact_phone': '', 'contact_name': '', 'contact_email': '', 'relation': ''}
         flash('Update customer ' + cusID + ' successfully!')
         return redirect(url_for('customer.search'))
