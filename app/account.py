@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request, render_template, flash, redirect, url_for
-from .models import Customer, Account, Saveacc, Checkacc, Cusforacc
+from .models import Customer, Account, Saveacc, Checkacc, Cusforacc, Bank
 from . import db
 
 
@@ -48,6 +48,8 @@ def create():
         errors.append('accountID')
     if not Customer.query.filter_by(cusID=cusID).first():
         errors.append('cusID')
+    if not Bank.query.filter_by(bankname=bank).first():
+        errors.append('bank')
     if not errors:
         new_account = Account(accountID=accountID, money=money, settime=datetime.now(), accounttype=accounttype)
         db.session.add(new_account)
@@ -59,9 +61,11 @@ def create():
             db.session.add(new_checkacc)
         new_cusforacc = Cusforacc(accountID=accountID, cusID=cusID, bank=bank, visit=datetime.now())
         db.session.add(new_cusforacc)
+        b = Bank.query.filter_by(bankname=bank)
+        b.update(dict(money=b.first().money + money))
         db.session.commit()
         init_form = {'accountID': '', 'cusID': '', 'money': '', 'settime': '', 'accounttype': '',
-        'money': '', 'bank': '', 'savetype': '', 'interestrate': '', 'overdraft': ''}
+            'money': '', 'bank': '', 'savetype': '', 'interestrate': '', 'overdraft': ''}
         flash('Create new account ' + accountID + ' successfully!')
         return render_template('account/create.html', errors=errors, init_form=init_form)
     else:
@@ -114,10 +118,13 @@ def search():
 
 @bp.route('/delete/<accountID>', methods=['GET'])
 def delete(accountID):
+    acc = Account.query.filter_by(accountID=accountID)
+    b = Bank.query.filter_by(bankname=acc.first().cusforacc.bank)
+    b.update(dict(money=b.first().money - acc.first().money))
     Saveacc.query.filter_by(accountID=accountID).delete()
     Checkacc.query.filter_by(accountID=accountID).delete()
     Cusforacc.query.filter_by(accountID=accountID).delete()
-    Account.query.filter_by(accountID=accountID).delete()
+    acc.delete()
     db.session.commit()
     flash('Delete account ' + accountID + ' successfully!')
     return redirect(url_for('account.search'))
@@ -157,8 +164,10 @@ def update():
     if not Customer.query.filter_by(cusID=cusID).first():
         errors.append('cusID')
     if not errors:
-        Account.query.filter_by(accountID=accountID).update(
-            dict(accountID=accountID, money=money, settime=datetime.now(), accounttype=accounttype))
+        acc = Account.query.filter_by(accountID=accountID)
+        b = Bank.query.filter_by(bankname=acc.first().cusforacc.bank)
+        b.update(dict(money=b.first().money - acc.first().money + money))
+        acc.update(dict(accountID=accountID, money=money, settime=datetime.now(), accounttype=accounttype))
         if accounttype == 'saveacc':
             Saveacc.query.filter_by(accountID=accountID).update(
                 dict(accountID=accountID, interestrate=interestrate, savetype=savetype))
@@ -166,7 +175,7 @@ def update():
             Checkacc.query.filter_by(accountID=accountID).update(
                 dict(accountID=accountID, overdraft=overdraft))
         Cusforacc.query.filter_by(accountID=accountID).update(
-            dict(accountID=accountID, cusID=cusID, bank=bank, visit=datetime.now()))
+            dict(accountID=accountID, cusID=cusID, visit=datetime.now()))
         db.session.commit()
         flash('Update new account ' + accountID + ' successfully!')
         return redirect(url_for('account.search'))

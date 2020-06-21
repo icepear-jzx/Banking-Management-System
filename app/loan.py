@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request, render_template, flash, redirect, url_for
-from .models import Loan, Cusforloan, Payinfo, Customer, Account, Saveacc, Checkacc, Cusforacc
+from .models import Loan, Cusforloan, Payinfo, Customer, Account, Saveacc, Checkacc, Cusforacc, Bank
 from . import db
 
 
@@ -81,8 +81,12 @@ def search():
 
 @bp.route('/delete/<loanID>', methods=['GET'])
 def delete(loanID):
+    loan = Loan.query.filter_by(loanID=loanID)
+    if loan.first().state == 'going':
+        flash('Delete loan ' + loanID + ' unsuccessfully!')
+        return redirect(url_for('loan.search'))
     Cusforloan.query.filter_by(loanID=loanID).delete()
-    Loan.query.filter_by(loanID=loanID).delete()
+    loan.delete()
     db.session.commit()
     flash('Delete loan ' + loanID + ' successfully!')
     return redirect(url_for('loan.search'))
@@ -114,7 +118,10 @@ def update():
     else:
         state = 'finished'
     if not errors:
-        Loan.query.filter_by(loanID=loanID).update(dict(state=state, rest_money=loan.rest_money-money))
+        loan = Loan.query.filter_by(loanID=loanID)
+        b = Bank.query.filter_by(bankname=loan.first().bank)
+        b.update(dict(money=b.first().money - money))
+        loan.update(dict(state=state, rest_money=loan.first().rest_money-money))
         new_payinfo = Payinfo(loanID=loanID, cusID=cusID, money=money, paytime=datetime.now())
         db.session.add(new_payinfo)
         db.session.commit()

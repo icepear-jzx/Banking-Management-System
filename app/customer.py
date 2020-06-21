@@ -90,8 +90,13 @@ def search():
 
 @bp.route('/delete/<cusID>', methods=['GET'])
 def delete(cusID):
-    Customer.query.filter_by(cusID=cusID).delete()
+    cus = Customer.query.filter_by(cusID=cusID)
+    if cus.first().cusforacc or cus.first().cusforloan:
+        flash('Delete customer ' + cusID + ' unsuccessfully!')
+        return redirect(url_for('customer.search'))
+    cus.delete()
     db.session.commit()
+    flash('Delete customer ' + cusID + ' successfully!')
     return redirect(url_for('customer.search'))
 
 

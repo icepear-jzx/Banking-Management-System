@@ -99,6 +99,7 @@ def fake_loan(bank_data, cus_data, num=100):
 
 
 def init_data():
+    print('Generating data ...')
     from .models import Bank, Customer, Account, Saveacc, Checkacc, Cusforacc, Loan, Cusforloan
     db.session.query(Cusforacc).delete()
     db.session.query(Saveacc).delete()
@@ -114,12 +115,16 @@ def init_data():
         if not Bank.query.filter_by(bankname=bank['bankname']).first():
             new_bank = Bank(**bank)
             db.session.add(new_bank)
+    
+    db.session.commit()
 
     cus_data = fake_cus(bank_data)
     for cus in cus_data:
         if not Customer.query.filter_by(cusID=cus['cusID']).first():
             new_cus = Customer(**cus)
             db.session.add(new_cus)
+    
+    db.session.commit()
     
     acc_data, cusforacc_data, saveacc_data, checkacc_data = fake_acc(bank_data, cus_data)
     for acc in acc_data:
@@ -139,6 +144,8 @@ def init_data():
             new_checkacc = Checkacc(**checkacc)
             db.session.add(new_checkacc)
     
+    db.session.commit()
+    
     loan_data, cusforloan_data = fake_loan(bank_data, cus_data)
     for loan in loan_data:
         if not Loan.query.filter_by(loanID=loan['loanID']).first():
@@ -150,6 +157,8 @@ def init_data():
             db.session.add(new_cusforloan)
 
     db.session.commit()
+
+    print('Generation finished !')
 
 
 def register_blueprints(app):
@@ -177,7 +186,7 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-        init_data()
+        # init_data()
 
     return app
 
