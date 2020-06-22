@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from flask import Blueprint, jsonify, request, render_template, flash, redirect, url_for
 from .models import Customer
 from . import db
