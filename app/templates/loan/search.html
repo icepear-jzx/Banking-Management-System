@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-  <h2 class="mb-3 mt-2">查询贷款</h2>
+  <h2 class="mb-3 mt-2">管理贷款</h2>
   <form class="form-inline mb-3" method="post">
     <div class="d-flex justify-content-between mb-2 w-100">
       <div class="form-group">
@@ -92,7 +92,7 @@
       <div class="modal-content">
         <div class="modal-body">
           {% set labels = ["贷款号", "身份证号", "贷款金额", "剩余金额", "贷款银行", "贷款状态"] %}
-          {% set names = ["loanID", "cusID", "money", "reat_money", "bank", "state"] %}
+          {% set names = ["loanID", "cusID", "money", "rest_money", "bank", "state"] %}
           <form class="pt-3" method="post">
             {% for i in range(labels|length) %}
             <div class="form-group row">

@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-  <h2 class="mb-3 mt-2">查询客户</h2>
+  <h2 class="mb-3 mt-2">管理客户</h2>
   <form class="form-inline mb-3" method="post">
     <div class="d-flex justify-content-between mb-2 w-100">
       <div class="form-group">
@@ -84,13 +84,13 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-body">
-          {% set labels = ["客户姓名", "身份证号", "联系电话", "家庭住址", 
+          {% set labels = ["注册银行", "客户姓名", "身份证号", "联系电话", "家庭住址", 
             "联系人姓名", "联系人手机号", "联系人Email", "联系人关系"
           ] %}
-          {% set names = ["cusname", "cusID", "cusphone", "address",
+          {% set names = ["bank", "cusname", "cusID", "cusphone", "address",
             "contact_name", "contact_phone", "contact_email", "relation"
           ] %}
-          {% set editable = [false, false, true, true,
+          {% set editable = [false, false, false, true, true,
             true, true, true, true
           ] %}
           <form class="pt-3" method="post" action="{{ url_for('customer.update') }}">

@@ -74,7 +74,6 @@ def quarter():
         y = int(q[:4])
         m_start = (int(q[-1]) - 1) * 3 + 1
         m_end = (int(q[-1]) - 1) * 3 + 3
-        print(y, m_start, m_end)
         money_stat.append({
             'period': q, 
             'acc': {bank: db.session.query(func.sum(Account.money)).filter(
@@ -126,7 +125,6 @@ def month():
     for month in months:
         y = int(month[:4])
         m = int(month.split('M')[-1])
-        print(y, m)
         money_stat.append({
             'period': month, 
             'acc': {bank: db.session.query(func.sum(Account.money)).filter(

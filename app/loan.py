@@ -26,6 +26,8 @@ def create():
         errors.append('loanID')
     try:
         money = float(money)
+        if money < 0:
+            errors.append('money')
     except:
         errors.append('money')
     if len(bank) == 0 or len(bank) > 20:
@@ -102,9 +104,9 @@ def update():
         errors.append('loanID')
     try:
         money = float(money)
+        if money < 0:
+            errors.append('money')
     except:
-        errors.append('money')
-    if money < 0:
         errors.append('money')
     loan = Loan.query.filter_by(loanID=loanID).first()
     if not loan:

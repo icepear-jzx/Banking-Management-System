@@ -30,6 +30,8 @@ def create():
         errors.append('accountID')
     try:
         money = float(money)
+        if money < 0:
+            errors.append('money')
     except:
         errors.append('money')
     if len(bank) == 0 or len(bank) > 20:
@@ -37,6 +39,8 @@ def create():
     if accounttype == 'saveacc':
         try:
             interestrate = float(interestrate)
+            if interestrate < 0:
+                errors.append('interestrate')
         except:
             errors.append('interestrate')
     else:
@@ -147,6 +151,8 @@ def update():
         errors.append('accountID')
     try:
         money = float(money)
+        if money < 0:
+            errors.append('money')
     except:
         errors.append('money')
     if len(bank) == 0 or len(bank) > 20:
@@ -154,6 +160,8 @@ def update():
     if accounttype == 'saveacc':
         try:
             interestrate = float(interestrate)
+            if interestrate < 0:
+                errors.append('interestrate')
         except:
             errors.append('interestrate')
     else:

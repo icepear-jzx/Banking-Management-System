@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request, render_template, flash, redirect, url_for
-from .models import Customer
+from .models import Customer, Bank
 from . import db
 
 
@@ -47,6 +47,8 @@ def create():
         errors.append('relation')
     if Customer.query.filter_by(cusID=cusID).first():
         errors.append('cusID')
+    if not Bank.query.filter_by(bankname=bank).first():
+        errors.append('bank')
     if not errors:
         new_customer = Customer(cusID=cusID, settime=datetime.now(), bank=bank, cusname=cusname, cusphone=cusphone, 
             address=address, contact_name=contact_name, contact_phone=contact_phone, 
